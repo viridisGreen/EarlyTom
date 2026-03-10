@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Preference Tuning with Mixup - MergeMix</title>
+<link rel="stylesheet" href="css/style.css" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Academic Icons for arXiv -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <!-- MathJax for mathematical formulas -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <div class="title-block">
+        <h1 class="site-title">MergeMix for MLLM Scenario</h1>
+        <p class="subtitle">MergeMix: A Unified Augmentation Paradigm for Visual and Multi-Modal Understanding</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel fade-up">
+        <h2 style="color: #dc2626; font-weight: bold;">Preference Tuning with MergeMix</h2>
+        <div class="implementation-step">
+          <h4 style="color: #2563eb;">Step 1: Building Preference Pairs</h4>
+          <p>
+            We build preference pairs for MLLM training through data augmentation methods (now support with MixUp, CutMix, ResizeMix, and MergeMix), as we described in the <a href="image-mixing.html">Image Mixing</a> section.
+          </p>
+          <div class="grid">
+            <img src="images/merge_pipeline.png" alt="Overall Pipeline of MergeMix for MLLM" />
+          </div>
+        </div>
+
+        <div class="implementation-step">
+          <h4 style="color: #2563eb;">Step 2: Aggregating Mixing Ratio within Preference Loss</h4>
+          <p>
+            We regard the mixed samples as loser and the clean samples as winner, and optimize via SimPO loss without relying on reward models.
+            To align model responses with ground-truth (GT) data, we replace the ranking component of the DPO loss with <strong>SimPO</strong>. This objective maximizes the likelihood of target responses while incorporating a dynamic margin.
+          </p>
+        
+          <div class="implementation-step">
+            <p>The relationship between the mixing ratio $\hat{\lambda}$ and the SimPO margin $\gamma$ is defined as:</p>
+            <div class="formula">
+              $$\gamma \propto (1 - \hat{\lambda})$$
+            </div>
+            <p>
+              Where $\hat{\lambda}$ reflects information similarity between augmented and raw images:
+            </p>
+            <ul style="font-size: 0.9rem; list-style-type: none; padding-left: 0;">
+              <li>• <strong>High $\hat{\lambda}$ (High Similarity):</strong> Harder discrimination task; $\gamma$ decreases to avoid over-optimization on trivial differences.</li>
+              <li>• <strong>Low $\hat{\lambda}$ (Low Similarity):</strong> Easier task; $\gamma$ increases to strengthen preference constraints for clearer distinction.</li>
+            </ul>
+          </div>
+          <p>
+            By linking the <strong>"loser degree"</strong> (derived from $\hat{\lambda}$) to the reward margin, the model adaptively scales the optimization strength based on the complexity of the augmented data.
+          </p>
+          <div class="formula">
+            $$\mathcal{L}^{\text{Mix}}_{\mathrm{SimPO}} = - \mathbb{E}_{(x, \hat{x},  y) \sim \mathcal{D}} \Big[
+            \log \sigma \big(\frac{\beta}{|y|} \log \pi_\theta(y \mid x) - \frac{\beta}{|y|} \log \pi_\theta(y \mid \hat{x}) - (1 - \hat{\lambda})
+            \big)\Big].$$
+        </div>
+
+        <div class="implementation-step">
+          <h4 style="color: #2563eb;">Step 3: Loss Function for MLLM Training</h4>
+          <p>
+            The model is optimized using a composite loss function $\mathcal{L}_{\text{Total}}$, which combines the SFT loss function $\mathcal{L}_{\text{SFT}}$ and the Mixed SimPO loss function $\mathcal{L}^{\text{Mix}}_{\text{SimPO}}$.
+          </p>
+          <div class="formula">
+            $$\mathcal{L}_{\text{Total}} = \mathcal{L}_{\text{SFT}} + \mathcal{L}^{\text{Mix}}_{\text{SimPO}}, \quad \mathcal{L}_\text{SFT} = - \mathbb{E}_{(x, y) \sim \mathcal{D}} \Bigg[ \sum_{t=1}^{|y|} \log \pi_\theta \big(y_t \mid x, y_{\lt t} \big) \Bigg]$$,
+          </div>
+        </div>
+      </section>
+
+      
+      <section id="results" class="panel fade-up">
+        <h2>Results of MLLM Benchmark</h2>
+        <div class="grid">
+          <img src="images/mllm-llava.png" alt="LLaVA-v1.5" />
+        </div>
+        <div class="grid">
+          <img src="images/mllm-qwenvl.png" alt="Qwen2.5-VL" />
+        </div>
+      </section>
+
+      <section id="results" class="panel fade-up">
+        <h2>Results of Calibration on MLLMs</h2>
+        <div class="grid">
+          <img src="images/calibration-llava-full.png" alt="Calibration on LLaVA" style="width: 45%; height: auto; max-width: 800px;" />
+        </div>
+      </section>
+
+      <section id="results" class="panel fade-up">
+        <h2>More Results of MLLM Benchmark</h2>
+        <div class="results-carousel">
+          <button class="carousel-btn prev">&#10094;</button>
+          <div class="carousel-track">
+            <div class="slide-h active">
+              <img src="images/llava-ratios-1.png" alt="LLaVA Inference Comparison Results" />
+              <p class="caption">Different token merge ratios of inference comparison results with augmentations. AVG: The average of the nine benchmarks for comprehensive comparison, except for MME.</p>
+            </div>
+            <div class="slide-h">
+              <img src="images/llava-ratios-2.png" alt="LLaVA Inference Comparison Results" />
+              <p class="caption">Different token merge ratios of inference comparison results with augmentations. AVG: The average of the nine benchmarks for comprehensive comparison, except for MME.</p>
+            </div>
+            <div class="slide-h">
+              <img src="images/llava-ratios-3.png" alt="LLaVA Inference Comparison Results" />
+              <p class="caption">Different token merge ratios of inference comparison results with augmentations. AVG: The average of the nine benchmarks for comprehensive comparison, except for MME.</p>
+            </div>
+          </div>
+          <button class="carousel-btn next">&#10095;</button>
+        </div>
+      </section>
+    </main>
+
+    <div style="text-align: center; margin: 20px 0;">
+      <a class="btn" href="index.html" style="display: inline-block;">Home Page</a>
+    </div>
+
+    <footer class="site-footer">
+      <div>© 2025 Xin Jin. All rights reserved. Part of MergeMix Project.</div>
+    </footer>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

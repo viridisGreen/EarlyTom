@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EarlyTom</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Academic Icons for arXiv -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <!-- Site logo -->
+  <link rel="icon" type="image/png" href="images/alibabacloud-color.svg">
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <div class="title-block">
+        <h1 class="site-title">EarlyTom: Early Token Compression Completes Fast Video Understanding</h1>
+      </div>
+      <div class="meta">
+        <div class="authors">
+          <a href="https://openreview.net/profile?id=~Hesong_Wang1" target="_blank">Hesong Wang</a><sup>1,2,🌟</sup>, 
+          <a href="https://scholar.google.com/citations?user=v3OwxWIAAAAJ&hl=zh-CN" target="_blank">Xin Jin</a><sup>2,🌟</sup>, 
+          <a href="https://openreview.net/profile?id=~Lu_Lu7" target="_blank">Lu Lu</a><sup>3</sup>, 
+          <a href="https://openreview.net/profile?id=~Chenhaowen_Li1" target="_blank">Chenhaowen Li</a><sup>3</sup>, 
+          <a href="https://openreview.net/profile?id=~Jian_Chen12" target="_blank">Jian Chen</a><sup>3</sup>, 
+          <a href="https://openreview.net/profile?id=~Qiang_Liu34" target="_blank">Qiang Liu</a><sup>3</sup>, 
+          <a href="https://scholar.google.com/citations?user=0-On0y4AAAAJ&hl=zh-CN" target="_blank">Huan Wang</a><sup>2,✉️</sup>
+        </div>
+        <div class="affiliations">
+          1 Zhejiang University, 2 Westlake University, 3 Aiibaba Cloud
+        </div>
+        <div class="affiliations">
+          <sup>🌟</sup> denote equal contribution, <sup>✉️</sup> denotes corresponding author
+        </div>
+        <div class="affiliations">
+          <b> EarlyTom has been accepted by CVPR 2026 🎉</b>
+        </div>
+        
+        <div class="institution-logos">
+          <img src="images/zju-logo.svg" alt="Zhejiang University" class="inst-logo">
+          <img src="images/westlake.png" alt="Westlake University" class="inst-logo">
+          <img src="images/alibabacloud-color.svg" alt="Aiibaba Cloud" class="inst-logo">
+          <img src="images/encode-logo.jpg" alt="EncodeLab" class="inst-logo">
+        </div>
+        
+        <div class="links">
+          <a class="btn" href="">
+            <i class="fab fa-github"></i> Code
+          </a>
+          <a class="btn" href="">
+            <img src="images/hf-logo.svg" alt="HuggingFace" class="icon-svg" /> HuggingFace
+          </a>
+          <a class="btn" href="">
+            <i class="ai ai-arxiv"></i> arXiv
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="teaser fade-up">
+        <img src="images/teaser.png" alt="Teaser image" />
+        <p class="fig-caption" style="text-align: justify; text-align-last: center; line-height: 1.6; margin: 0; padding: 0 20px;">
+          <b>Left:</b> This paper aims to improve the inference efficiency of video understanding based on video large language models (LLMs). 
+          Latency profiling suggests the major speed bottleneck lies in the vision encoder part instead of the LLM. 
+          Knowing this, we introduce <b>EarlyTom</b>, a training-free <b>to</b>ken co<b>m</b>pression method designed for the <b>early</b> stage (<i>i.e.,</i> vision encoder) of video LLMs. 
+          EarlyTom features two core components: (1) early-stage visual token compression achieved via inner-vision encoder frame merging, and (2) a spatial token selection strategy that further increases compression effectiveness without introducing bias. 
+          <b>Right:</b> Scatter plot illustrating the relationship between time-to-first-token and throughput, along with the average performance across four widely used video understanding benchmarks (MVBench, EgoSchema, LongVideoBench, and VideoMME) for several training-free state-of-the-art methods. 
+          EarlyTom achieves state-of-the-art performance while maintaining accuracy comparable to full-token methods.
+        </p>
+      </section>
+
+      <section id="abstract" class="panel fade-up">
+        <h2>Abstract</h2>
+        <p>
+          Video large language models (Video-LLMs) have demonstrated strong capabilities in video understanding tasks. 
+          However, their practical deployment is still hindered by the inefficiency introduced by processing massive amounts of visual tokens. 
+          Although recent approaches achieve extremely low token retention ratios while maintaining accuracy comparable to full-token baselines, most of them perform compression only at the late stage of prefilling, leaving the efficiency of the vision encoder unoptimized. 
+          In this paper, we first show that vision encoding contributes a large portion to the time-to-first-token (TTFT). 
+          Therefore, instead of compressing visual tokens only after the vision encoder, performing compression inside the encoder still leaves substantial room for exploration. 
+          Based on this insight, we propose EarlyTom, a training-free token compression framework that performs early-stage visual token compression inside the vision encoder, enabling significantly better TTFT reduction and higher throughput. 
+          In addition, we introduce a decoupled spatial token selection strategy that improves the overall compression effectiveness. 
+          EarlyTom reduces TTFT by up to <b>2.65x</b> and FLOPs by up to <b>61%</b> on a single NVIDIA A100 GPU for the LLaVA-OneVision-7B model, while maintaining accuracy comparable to the full-token baseline. 
+          These improvements substantially enhance the practicality of deploying Video-LLMs in real-world production scenarios.
+        </p>
+      </section>
+
+      <section id="overview" class="panel fade-up">
+        <h2>Method Overview</h2>
+        <div class="overview-grid">
+          <img src="images/overall.png" alt="Overview figure" />
+          <p class="fig-caption" style="text-align: justify; text-align-last: center; line-height: 1.6; margin: 0; padding: 0 20px;">
+            <b>Overall pipeline of EarlyTom.</b>
+            Our method consists of two main stages for efficient video token compression. 
+            <b>Stage I:</b> Inner-vision encoder frame merging performs temporal compression inside the vision encoder. The video is adaptively segmented based on streaming frame similarity, redundant middle frames are merged using a local-optimal criterion, and merged representations are further refined with weighted fusion to reduce early-stage temporal redundancy. 
+            <b>Stage II:</b> Decoupling selection conducts spatial token reduction after vision encoding. Merged frame features are decomposed into dynamic and static token sets: dynamic frames undergo global Top-K selection, while static frames use local-window selection to preserve spatial distribution. The selected tokens from both paths are recombined and fed into the LLM for decoding. 
+            Together, these two stages enable early temporal compression and balanced spatial sampling, significantly accelerating Video LLM inference while maintaining semantic fidelity.
+          </p>
+          <div>
+            <p>
+              We investigate an interesting question: <strong><i>Is it necessary to propose novel techniques rather than some classical machine learning methods in the MLLM scenario?</i></strong>
+            </p>
+            <ul>
+              <li>
+                <strong>xxx</strong> 
+                xxx
+              </li>
+              <li>
+                <strong>xxx</strong> 
+                xxx
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="experiments" class="panel fade-up">
+        <h2>Results on Performance</h2>
+        <p>
+          xxx
+        </p>
+        <div class="results-carousel">
+          <button class="carousel-btn prev">&#10094;</button>
+          <div class="carousel-track">
+            <div class="slide">
+              <img src="images/llava-ov-7b.png" alt="LLaVA-OneVision-7B" style="width: auto; height: 90%;"/>
+              <p class="caption">LLaVA-OneVision-7B</p>
+            </div>
+            <div class="slide">
+              <img src="images/llava-ov-05b.png" alt="LLaVA-OneVision-0.5B" style="width: 100%; height: auto;" />
+              <p class="caption">LLaVA-OneVision-0.5B</p>
+            </div>
+          </div>
+          <button class="carousel-btn next">&#10095;</button>
+        </div>
+
+        <h2>Results on Efficiency</h2>
+        <p>
+          xxx
+        </p>
+        <div class="results-carousel">
+          <button class="carousel-btn prev">&#10094;</button>
+          <div class="carousel-track">
+            <div class="slide">
+              <img src="images/cam-samples-2.png" alt="CAM Samples 2" />
+              <p class="caption">CAM Samples</p>
+            </div>
+          </div>
+          <button class="carousel-btn next">&#10095;</button>
+        </div>
+      </section>
+
+      <!-- BibTeX -->
+      <section id="bibtex" class="panel fade-up">
+        <h2>BibTeX</h2>
+        <div class="bibtex-container">
+          <pre class="bibtex">@inproceedings{wang2025earlytom,
+         title = {EarlyTom: Early Token Compression Completes Fast Video Understanding},
+         author = {Wang, Hesong and Jin, Xin and Lu, Lu and Chenhaowen Li, Jian Chen and Qiang Liu and Wang, Huan},
+         year = {2026},
+         booktitle={CVPR},
+}
+          </pre>
+          <button class="copy-btn" onclick="copyBibtex()">Copy</button>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <div>© 2025 xin Jin. All rights reserved. Part of EarlyTom Project.</div>
+    </footer>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
