@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -10,7 +11,7 @@
   <!-- Academic Icons for arXiv -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <!-- Site logo -->
-  <link rel="icon" type="image/png" href="images/web-logo.png">
+  <link rel="icon" type="image/png" href="images/tom_clean.png">
   <!-- MathJax for mathematical formulas -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -28,12 +29,14 @@
     };
   </script>
 </head>
+
 <body>
   <div class="container">
     <header class="site-header">
       <div class="title-block">
-        <h1 class="site-title"><img src="images/Tom-logo.png" alt="EarlyTom" class="inst-logo", style="height: 50pt; width: auto; margin-bottom: -15pt;"> 
-          EarlyTom: <u>Early</u> <u>T</u>oken C<u>om</u>pression Completes Fast Video Understanding
+        <h1 class="site-title">
+          <!-- <img src="images/tom_clean.png" alt="EarlyTom" class="inst-logo", style="height: 50pt; width: auto; margin-bottom: -15pt;">  -->
+          EarlyTom <img src="images/tom_clean.png" alt="EarlyTom" class="inst-logo", style="height: 50pt; width: auto; margin-bottom: -15pt;"> : <u>Early</u> <u>T</u>oken C<u>om</u>pression Completes Fast Video Understanding
         </h1>
       </div>
       <div class="meta">
@@ -86,7 +89,7 @@
           Latency profiling suggests the major speed bottleneck lies in the vision encoder part instead of the LLM. 
           Knowing this, we introduce <b>EarlyTom</b>, a training-free <b>to</b>ken co<b>m</b>pression method designed for the <b>early</b> stage (<i>i.e.,</i> vision encoder) of video LLMs. 
           EarlyTom features two core components: (1) early-stage visual token compression achieved via inner-vision encoder frame merging, and (2) a spatial token selection strategy that further increases compression effectiveness without introducing bias. 
-          <b>Right:</b> Scatter plot illustrating the relationship between time-to-first-token and throughput, along with the average performance across four widely used video understanding benchmarks (MVBench, EgoSchema, LongVideoBench, and VideoMME) for several training-free state-of-the-art methods. 
+          <b>Right:</b> Scatter plot illustrating the relationship between FLOPs and throughput, along with the average performance across four widely used video understanding benchmarks (MVBench, EgoSchema, LongVideoBench, and VideoMME) for several training-free state-of-the-art methods. 
           EarlyTom achieves state-of-the-art performance while maintaining accuracy comparable to full-token methods.
         </p>
       </section>
@@ -239,7 +242,7 @@
       </section>
 
       <section id="experiments" class="panel fade-up">
-        <h2>Results on Performance</h2>
+        <h2>Main Results</h2>
         <p>
           We evaluate EarlyTom on four widely used video understanding benchmarks (MVBench, EgoSchema, LongVideoBench, and VideoMME) for several training-free state-of-the-art methods based on LLaVA-OneVision-0.5/7B, LLaVA-Video-7B and Qwen2.5-VL-7B.
           The results are shown in the following figure.
@@ -265,7 +268,7 @@
           <button class="carousel-btn next">&#10095;</button>
         </div>
 
-        <h2>Results on Efficiency</h2>
+        <h2>Other Results</h2>
         <p>
           We also evaluate the efficiency of EarlyTom on the video sink task.
           The results are shown in the following figure.
@@ -295,11 +298,12 @@
       <section id="bibtex" class="panel fade-up">
         <h2>BibTeX</h2>
         <div class="bibtex-container">
-          <pre class="bibtex">@inproceedings{wang2025earlytom,
-         title = {EarlyTom: Early Token Compression Completes Fast Video Understanding},
-         author = {Wang, Hesong and Jin, Xin and Lu, Lu and Chenhaowen Li, Jian Chen and Qiang Liu and Wang, Huan},
-         year = {2026},
-         booktitle={CVPR},
+          <pre class="bibtex">@inproceedings{
+    wang2025earlytom,
+    title = {EarlyTom: Early Token Compression Completes Fast Video Understanding},
+    author = {Wang, Hesong and Jin, Xin and Lu, Lu and Chenhaowen Li, Jian Chen and Qiang Liu and Wang, Huan},
+    year = {2026},
+    booktitle={CVPR},
 }
           </pre>
           <button class="copy-btn" onclick="copyBibtex()">Copy</button>
@@ -309,10 +313,11 @@
     </main>
 
     <footer class="site-footer">
-      <div>© 2025 xin Jin. All rights reserved. Part of EarlyTom Project.</div>
+      <div>© 2025 Hesong Wang & Xin Jin. All rights reserved. Part of EarlyTom Project.</div>
     </footer>
   </div>
 
   <script src="js/script.js"></script>
 </body>
+
 </html>
