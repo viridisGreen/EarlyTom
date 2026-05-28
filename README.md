@@ -37,7 +37,7 @@ EarlyTom supports two complementary compression strategies:
 ### 1️⃣ Clone the repository
 
 ```shell
-git clone https://github.com/[REPO].git
+git clone https://github.com/viridisGreen/EarlyTom
 cd EarlyTom
 ```
 
