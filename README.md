@@ -12,8 +12,8 @@
 
 <p align="center">
     <a href="https://viridisgreen.github.io/EarlyTom/" alt="arXiv">
-        <img src="https://img.shields.io/badge/arXiv-2510.23479-b31b1b.svg?style=flat" /></a>
-    <a href="https://viridisgreen.github.io/EarlyTom/" alt="Webpage"></a>
+        <img src="https://img.shields.io/badge/arXiv-2605.30010-b31b1b.svg?style=flat" /></a>
+    <a href="https://arxiv.org/abs/2605.30010" alt="Webpage"></a>
 </p>
 
 
