@@ -1,7 +1,7 @@
 <div align="center">
 <img src="docs/earlytom_logo.png" width="200"/>
 
-<h2><a href="[ARXIV_URL]">EarlyTom: Early Token Compression Completes Fast Video Understanding</a></h2>
+<h2><a href="https://arxiv.org/abs/2605.30010">EarlyTom: Early Token Compression Completes Fast Video Understanding</a></h2>
 
 [Hesong Wang](https://viridisgreen.github.io/)<sup>1,2,3,🌟</sup>, [Xin Jin](https://jinxins.github.io/)<sup>2,🌟</sup>, Lu Lu<sup>3,✉️</sup>, Chenhaowen Li<sup>3</sup>, Jian Chen<sup>3</sup>, Qiang Liu<sup>3</sup>, [Huan Wang](https://huanwang.tech/)<sup>2,✉️</sup>
 
@@ -19,7 +19,7 @@
 
 ## 📆 News
 
-**[2026/5/17]** We release the EarlyTom code.
+**[2026/5/28]** We release the EarlyTom code.
 
 
 ## 🔍 Introduction
